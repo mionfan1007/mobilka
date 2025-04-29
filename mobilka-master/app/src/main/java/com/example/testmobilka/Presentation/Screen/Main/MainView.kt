@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
+import com.example.testmobilka.Presentation.Navigation.NavigationRoutes
 import kotlin.math.cos
 
 @Composable
@@ -90,7 +91,7 @@ fun MainView(controller: NavHostController) {
             LazyColumn {
                 items(state.allPosters){ items ->
 
-                    PosterItem(items.image,items.description,items.ticket_price)
+                    PosterItem(items.image,items.description,items.ticket_price, controller)
                 }
             }
         }
@@ -130,25 +131,32 @@ fun FieldSearch(value: String, onvaluechange: (String) -> Unit) {
 }
 
 @Composable
-fun PosterItem(img:String,title:String,cost:Int,) {
+fun PosterItem(img:String,title:String,cost:Int,controller: NavHostController) {
+    val vm = viewModel { MainViewModel() }
+    val state = vm.state
+    val posters = vm.posters.observeAsState(emptyList())
     Box(
         modifier = Modifier
+
             .padding(10.dp)
             .background(Color(24, 226, 186), shape = RoundedCornerShape(15.dp))
             .padding(10.dp)
             .fillMaxWidth()
-            .width(200.dp),
+            .width(200.dp)
+            .clickable(onClick = {
+                controller.navigate(NavigationRoutes.DETAILS + "/" )
+            }),
+        contentAlignment = Alignment.Center,
 
-        contentAlignment = Alignment.Center
     ) {
 
 
         Column(modifier = Modifier.align(alignment = Alignment.CenterEnd)) {
-
             Text(text = title)
             Text(text = cost.toString() + " рублей")
         }
     }
+
 }
 @Composable
 fun CategoryItem(category: String, isSelected: Boolean, onClick: () -> Unit) {

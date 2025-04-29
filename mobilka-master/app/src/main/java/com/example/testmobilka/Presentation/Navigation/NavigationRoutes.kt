@@ -5,4 +5,5 @@ object NavigationRoutes {
     const val SIGNIN = "signin"
     const val SIGNUP = "signup"
     const val AUTHORISED = "authorised"
+    const val DETAILS = "details"
 }
