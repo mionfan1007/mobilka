@@ -36,7 +36,7 @@ fun DetailsView(controller: NavHostController, id:String) {
                 .padding(top = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            androidx.compose.material3.Text(text = id)
+            androidx.compose.material3.Text(text = "Страница деталей книги")
         }
 
 
