@@ -69,12 +69,13 @@ fun MainView(controller: NavHostController) {
                 .padding(top = 40.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
+            //!!!!!!!!!!!!
             FieldSearch(
                 value = searchBar.value,
                 onvaluechange = { newText ->
                     searchBar.value = newText
                     vm.filterList(
-                        searchBar.value,
+                        newText,
                         selectedCategory.intValue
                     )
                 }
@@ -83,7 +84,7 @@ fun MainView(controller: NavHostController) {
             LazyRow {
                 items(state.allCategories) { index ->
 
-                    CategoryItem(index.category,false){
+                    CategoryItem(index.category, index.id){
 
                     }
                 }
@@ -159,18 +160,21 @@ fun PosterItem(img:String,title:String,cost:Int,controller: NavHostController) {
 
 }
 @Composable
-fun CategoryItem(category: String, isSelected: Boolean, onClick: () -> Unit) {
+fun CategoryItem(category: String, id:Int, onClick: () -> Unit) {
+    val vm = viewModel { MainViewModel() }
+    val state = vm.state
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .padding(8.dp)
             .border(
-                width = if (isSelected) 2.dp else 0.dp,
-                color = if (isSelected) Color(24, 226, 186) else Color.Transparent,
+                width = 0.dp,
+                color = Color.Transparent,
                 shape = RoundedCornerShape(15.dp)
             )
-            .clickable(onClick = onClick,
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() })
+            //!!!!!!!!!!
+            .clickable(onClick = {vm.filterList("", id)},
+                )
             .background(Color.White, shape = RoundedCornerShape(15.dp))
             .padding(10.dp)
             .width(150.dp),

@@ -91,8 +91,10 @@ class MainViewModel: ViewModel() {
             val matchesDesc = query.isNullOrEmpty() || poster.description.contains(query, ignoreCase = true)
             val matchesCategory = categoryId == -1 || poster.category == categoryId
             matchesDesc && matchesCategory
+
         }
         _posters.value = filteredPosters
+
     }
 }
 
