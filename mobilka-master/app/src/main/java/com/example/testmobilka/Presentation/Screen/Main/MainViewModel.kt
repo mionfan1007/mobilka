@@ -24,39 +24,31 @@ import kotlinx.coroutines.withContext
 
 class MainViewModel: ViewModel() {
 
-    private val _state = mutableStateOf(PostersState())
-    val state: PostersState get() = _state.value
+    private val _state = mutableStateOf(MainState())
+    val state: MainState get() = _state.value
 
-    private val _posters = MutableLiveData<List<Posters>>()
-    val posters: LiveData<List<Posters>> get() = _posters
 
-    private val _categories = MutableLiveData<List<category>>()
-    val categories: LiveData<List<category>> get() = _categories
 
-    private var PostersAll: List<Posters> = listOf()
-
-    fun updatestate(newstate: PostersState) {
-        _state.value = newstate
-    }
-
-    fun updateState(newState: PostersState) {
+    fun updateState(newState: MainState) {
         _state.value = newState
     }
 
-    fun getData() {
-        viewModelScope.launch {
-            val getInfo = com.example.testmobilka.Domain.Constants.supabase
-            val responseSupa = getInfo.postgrest["posters"].select()
-            val data = responseSupa.decodeList<PostersState>()
-        }
-    }
+
 
     fun loadPosters(context: Context) {
 
         viewModelScope.launch {
             try {
-                PostersAll = Constants.supabase.postgrest.from("posters").select().decodeList<Posters>()
-                _posters.value = PostersAll
+                val PostersAll = Constants.supabase.postgrest.from("posters").select().decodeList<Posters>()
+                val categor = supabase.postgrest.from("category").select().decodeList<category>().toMutableList()
+                categor.add(0,category(0,"Все"))
+
+                Log.e("1", PostersAll.toString())
+                updateState(state.copy(CategoryList = categor))
+                updateState(state.copy(ListPoster = PostersAll))
+                Log.d("GET all posters","Good")
+                Log.d("posters",state.ListPoster.toString())
+
             } catch (e: Exception) {
                 Toast.makeText(context, "Ошибка с постерами", Toast.LENGTH_LONG).show()
             }
@@ -74,10 +66,10 @@ class MainViewModel: ViewModel() {
 
                 Log.e("category",category.toString())
 
-                updatestate(state.copy(allCategories = category, allPosters = posters))
+                updateState(state.copy(CategoryList = category, ListPoster = posters))
 
-                Log.e("category",state.allCategories.toString())
-                Log.e("posters",state.allPosters.toString())
+                Log.e("category",state.CategoryList.toString())
+                Log.e("posters",state.ListPoster.toString())
 
             } catch (e: Exception) {
                 Toast.makeText(context, "Ошибка с категориями", Toast.LENGTH_LONG).show()
@@ -86,16 +78,6 @@ class MainViewModel: ViewModel() {
         }
     }
 
-    fun filterList(query: String?, categoryId: Int?) {
-        val filteredPosters = PostersAll.filter { poster ->
-            val matchesDesc = query.isNullOrEmpty() || poster.description.contains(query, ignoreCase = true)
-            val matchesCategory = categoryId == -1 || poster.category == categoryId
-            matchesDesc && matchesCategory
-
-        }
-        _posters.value = filteredPosters
-
-    }
 }
 
 

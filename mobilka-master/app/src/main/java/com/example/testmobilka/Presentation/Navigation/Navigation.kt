@@ -1,5 +1,6 @@
 package com.example.testmobilka.Presentation.Navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -41,6 +42,11 @@ fun Navigation(controller: NavHostController) {
 
             if (id != null) {
                 DetailsView(controller, id)
+                Log.e("LIGYKUVHKUH", id)
+            }
+            else
+            {
+                SplashView(controller = controller)
             }
         }
     }
